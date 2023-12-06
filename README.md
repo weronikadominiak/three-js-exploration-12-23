@@ -2,3 +2,4 @@
 
 todo:
 - add resources: Bruno Simon, Daniel Velasquez
+https://thebookofshaders.com/
