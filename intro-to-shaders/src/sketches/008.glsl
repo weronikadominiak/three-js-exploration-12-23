@@ -2,11 +2,12 @@ precision highp float;
 
 varying vec2 vUv;
 uniform float uTime;
+uniform vec2 uResolution;
 
 // 6.28318 is PI * 2 - the exact point where the wave repeats
 // use http://dev.thi.ng/gradients/ to generate gradients
 vec3 palette(in float t) {
-  vec3 a = vec3(0.7, 0.5, 0.5);
+  vec3 a = vec3(0.7, 0.5, 1.5);
   vec3 b = vec3(-0.462, 0.5, 0.5);
   vec3 c = vec3(1.0, 1.0, 1.0);
   vec3 d = vec3(-1.1, 0.9, 0.927);
@@ -16,9 +17,10 @@ vec3 palette(in float t) {
 
 
 void main(){
-  vec2 uv = vUv;
+  vec2 uv = vUv * 2.0 - 1.; // not sure why this fixed it, need to look into this deeper, I was expecting uResolution would translate to iResolution, but for some reason it breaks it
+
+    // vec2 uv = (vUv * 2. - uResolution.xy) * uResolution / min(uResolution.x, uResolution.y);
   vec2 uv0 = uv; // original uv
-  uv = (uv - 0.5) * 2.0;
 
   // introduce spacial repetition
   // fract function returns the fractional part of it's input extracting only the didgets after decimal point, so results are from 0 to 1
@@ -31,7 +33,7 @@ void main(){
 
   float d = length(uv);
   // vec3 col = palette(d * uTime);  // defining color
-  vec3 col = palette(length(uv0) * uTime * 0.2);  // replacing d with uv0 will create a gradient from the center of the screen - avoid local repetition
+  vec3 col = palette(length(uv0) + uTime);  // replacing d with uv0 will create a gradient from the center of the screen - avoid local repetition
 
 
   // d = sin(d * 8.)/8.; // using sin here will create repetition of the rings, we are multiplying because we wouldn't see a difference with 1 and we would see only one circle. Multiplying the distance by 8 stretches the space and alters the color intensity requiring coresponding division by the same number

@@ -28,6 +28,10 @@ let rendering = new Rendering(document.querySelector("#canvas"))
 
 let uTime = new THREE.Uniform(0)
 
+let uResolution = new THREE.Uniform({x: rendering.canvas.width, y: rendering.canvas.height})
+
+console.log(uResolution)
+
 const plane = new THREE.PlaneGeometry()
 const fullscreenMaterial = new THREE.RawShaderMaterial({
   vertexShader: glsl`
@@ -45,7 +49,8 @@ const fullscreenMaterial = new THREE.RawShaderMaterial({
 `,
   fragmentShader: sketches["./sketches/"+selectedSketch],
   uniforms: {
-    uTime: uTime
+    uTime: uTime,
+    uResolution: uResolution
   }
 })
 const mesh = new THREE.Mesh(plane, fullscreenMaterial)
