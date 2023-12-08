@@ -3,6 +3,7 @@ precision highp float;
 varying vec2 vUv;
 uniform float uTime;
 uniform vec2 uResolution;
+uniform sampler2D tAudioData;
 
 // reference https://www.shadertoy.com/view/XsX3zS 
 
@@ -10,7 +11,6 @@ uniform vec2 uResolution;
 // The most basic shader
 void main(){
   vec2 uv = vUv * 2. -1.;
-  // vec2 uv0 = vUv;
   vec3 fragColor = vec3(0.0, 0.0, 0.1);
   const float WAVES = 10.0;
   

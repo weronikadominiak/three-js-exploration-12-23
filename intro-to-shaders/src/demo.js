@@ -5,6 +5,7 @@ import * as THREE from "three";
 
 import {  catchThreeJSErrors,  setupSketchControls } from "./utils";
 
+
 // -- Sketch management trickery
 //
 
@@ -30,7 +31,50 @@ let uTime = new THREE.Uniform(0)
 
 let uResolution = new THREE.Uniform({x: rendering.canvas.width, y: rendering.canvas.height})
 
-console.log(uResolution)
+let test = { value: 0 };
+
+
+
+//-- Audio Analyser
+//https://threejs.org/docs/#api/en/audio/AudioAnalyser
+
+// create an AudioListener and add it to the camera
+const listener = new THREE.AudioListener();
+rendering.camera.add( listener );
+
+// create an Audio source
+const sound = new THREE.Audio( listener );
+
+// load a sound and set it as the Audio object's buffer
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load( '/examples_sounds_376737_Skullbeatz___Bad_Cat_Maste.ogg', function( buffer ) {
+// audioLoader.load( '/examples__audio_song.mp3', function( buffer ) {
+  sound.setBuffer( buffer );
+	sound.setLoop(true);
+	sound.setVolume(0.5);
+	sound.play();
+});
+
+const fftSize = 128;
+// create an AudioAnalyser, passing in the sound and desired fftSize
+const analyser = new THREE.AudioAnalyser( sound, fftSize );
+console.log(analyser.getFrequencyData());
+
+// get the average frequency of the sound
+const frequencyData = analyser.getFrequencyData();
+// const averageFreq = analyser.getAverageFrequency();
+const format = THREE.RedFormat; // todo
+
+
+// console.log(analyser.data, frequencyData);
+let tAudioData =  { value: new THREE.DataTexture( analyser.data, fftSize / 2, 1, format ) };
+const uniforms = {
+    uTime: uTime,
+    uResolution: uResolution,
+    tAudioData,
+    test: test
+  }
+
 
 const plane = new THREE.PlaneGeometry()
 const fullscreenMaterial = new THREE.RawShaderMaterial({
@@ -48,19 +92,26 @@ const fullscreenMaterial = new THREE.RawShaderMaterial({
     }
 `,
   fragmentShader: sketches["./sketches/"+selectedSketch],
-  uniforms: {
-    uTime: uTime,
-    uResolution: uResolution
-  }
+  uniforms,
 })
+
+console.log({  value: new THREE.DataTexture( analyser.data, fftSize / 2, 1, format ) })
 const mesh = new THREE.Mesh(plane, fullscreenMaterial)
 
 rendering.scene.add(mesh)
 
+
 function tick (time, delta){
   uTime.value += delta * 0.001;
+  // test.value = analyser.getAverageFrequency();
+  analyser.getFrequencyData();
+  tAudioData.value.needsUpdate = true;
   rendering.render()
+
+  // console.log(analyser.getFrequencyData())
 }
 
 gsap.ticker.add(tick)
+
+
 
