@@ -25,7 +25,7 @@ float square(vec2 uv, float size){
 vec3 backgroundSketch(){
 
   vec2 uv = vUv;
-  float gridSize = 20.;
+  float gridSize = 40.;
   uv *= gridSize;
   uv = fract(uv);
 
@@ -34,12 +34,12 @@ vec3 backgroundSketch(){
 
 
 	float distToCenter = distance(vec2(gridSize/2. - 0.5), gridIndex);
-  float size =  0.3 + 0.3* sin(distToCenter - uTime * 4. );
+  float size =  0.5 + 0.5* sin(distToCenter - uTime * 4. );
   float sq = square(uv, size);
   
   float paletteOffset = vUv.x * 0.2 + uTime * 0.2;
 
-  return sq * palette(paletteOffset, vec3(0.8,0.5,0.4),vec3(0.2,0.4,0.2),vec3(2.0,1.0,1.0),vec3(0.0,0.25,0.25));
+  return sq * palette(paletteOffset, vec3(0.0,0.2,1.),vec3(0.8,0.4,2.),vec3(2.0,1.0,1.0),vec3(0.8,1.,0.));
 
 }
 // The most basic shader
@@ -49,10 +49,10 @@ void main(){
   float result = 0.;
 
 
-  uv.x = normalSin(uv.x * 10.);
-  uv.y = normalSin(uv.y * 10.);
+  uv.x = normalSin(uv.x * 15.);
+  uv.y = normalSin(uv.y * 15.);
 
-  float gridSize = 10.;
+  float gridSize = 14.;
   uv *= gridSize;
   uv = fract(uv);
 

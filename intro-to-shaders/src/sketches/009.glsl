@@ -24,7 +24,7 @@ void main(){
 
   for (float i = 0.0; i < 3.0; i++) {
     float d = length(uv);
-    vec3 col = palette(length(uv0) + uTime); 
+    vec3 col = palette(length(uv0) + uTime * 0.2); 
 
 
     d = sin(d * 8. + uTime)/8.; 

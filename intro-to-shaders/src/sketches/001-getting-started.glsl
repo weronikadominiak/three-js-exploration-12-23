@@ -2,6 +2,7 @@ precision highp float;
 
 varying vec2 vUv;
 uniform float uTime;
+uniform vec2 uResolution;
 
 // The most basic shader
 void main(){
