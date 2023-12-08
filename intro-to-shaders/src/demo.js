@@ -58,7 +58,6 @@ audioLoader.load( '/examples_sounds_376737_Skullbeatz___Bad_Cat_Maste.ogg', func
 const fftSize = 128;
 // create an AudioAnalyser, passing in the sound and desired fftSize
 const analyser = new THREE.AudioAnalyser( sound, fftSize );
-console.log(analyser.getFrequencyData());
 
 // get the average frequency of the sound
 const frequencyData = analyser.getFrequencyData();
@@ -75,11 +74,10 @@ const uniforms = {
     test: test
   }
 
-
 const plane = new THREE.PlaneGeometry()
 const fullscreenMaterial = new THREE.RawShaderMaterial({
   vertexShader: glsl`
-     precision highp float;
+    precision highp float;
     attribute vec3 position;
     attribute vec2 uv;
 
@@ -103,12 +101,10 @@ rendering.scene.add(mesh)
 
 function tick (time, delta){
   uTime.value += delta * 0.001;
-  // test.value = analyser.getAverageFrequency();
   analyser.getFrequencyData();
   tAudioData.value.needsUpdate = true;
   rendering.render()
 
-  // console.log(analyser.getFrequencyData())
 }
 
 gsap.ticker.add(tick)
