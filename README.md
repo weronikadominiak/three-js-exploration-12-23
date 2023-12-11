@@ -24,3 +24,6 @@ https://blog.maximeheckel.com/posts/the-study-of-shaders-with-react-three-fiber/
 https://registry.khronos.org/OpenGL-Refpages/gl4/index.php
 
 https://webglfundamentals.org/webgl/lessons/webgl-shaders-and-glsl.html
+
+http://zadvorsky.com/#/writing
+

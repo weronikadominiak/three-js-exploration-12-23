@@ -15,7 +15,7 @@ void main(){
   // vec2 uv0 = vUv;
   // float frequency = texture2D( tAudioData, vec2( vUv.x, 0.0 ) ).r;
   vec3 fragColor = vec3(0, 0.0, 0.5);
-  const float WAVES = 1.0;
+  const float WAVES = 6.0;
   
   // generate multiple waves  for each pixel
   for(float i = 0.0; i < WAVES; i++) {
@@ -24,9 +24,9 @@ void main(){
      // position the wave
     vec2 pos = vec2(uv);
     // move the wave along the x axis based on the frequency and number of the wave
-    pos.x += i * 0.08 + frequency * 0.01;
+    pos.x += i * 0.5 + frequency * 0.01;
     // add some noise to the y position
-    pos.y += sin(pos.x * 12. + uTime) * cos(pos.x * 5.0) * frequency * 0.2 * ((i + 1.0) / WAVES);
+    pos.y += sin(pos.x * 12. + uTime) * frequency * 0.2 * ((i + 1.0) / WAVES);
 
 
     // intensity of the wave is used to modulate the color of the final pixel

@@ -11,7 +11,7 @@ uniform float test;
 
 // The most basic shader
 void main(){
-  vec2 uv = vUv * 2. -1.;
+  vec2 uv = vUv;
 
   vec3 backgroundColor = vec3( 0.125, 0.125, 0.125 );
   vec3 color = vec3( 1.0, 1.0, 0.0 );

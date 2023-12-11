@@ -55,12 +55,10 @@ audioLoader.load( '/examples_sounds_376737_Skullbeatz___Bad_Cat_Maste.ogg', func
 	sound.play();
 });
 
-const fftSize = 128;
+const fftSize = 256;
 // create an AudioAnalyser, passing in the sound and desired fftSize
 const analyser = new THREE.AudioAnalyser( sound, fftSize );
 
-// get the average frequency of the sound
-const frequencyData = analyser.getFrequencyData();
 // const averageFreq = analyser.getAverageFrequency();
 const format = THREE.RedFormat; // todo
 
