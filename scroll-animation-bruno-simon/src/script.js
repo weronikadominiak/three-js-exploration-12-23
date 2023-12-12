@@ -7,7 +7,7 @@ import GUI from 'lil-gui'
 const gui = new GUI()
 
 const parameters = {
-    materialColor: '#d6fc52'
+    materialColor: '#d6fc52',
 }
 
 gui
@@ -15,8 +15,7 @@ gui
     .onChange(() => {
         material.color.set(parameters.materialColor)
     })
-
-
+ 
 
 /**
  * Base
@@ -77,11 +76,36 @@ scene.add(mesh1, mesh2, mesh3);
 const sectionMeshes = [mesh1, mesh2, mesh3];
 
 
+/**
+ * Particles
+ */
+// Gemoetry
+const particlesCount = 200;
+const positions = new Float32Array(particlesCount * 3)
+
+for (let i = 0; i < particlesCount; i++) {
+    positions[i * 3 + 0] = (Math.random() - 0.5) * 10; // x
+    positions[i * 3 + 1] = objectsDistance * 0.5 - Math.random() * objectsDistance * sectionMeshes.length;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 10; // z 
+}
+
+const particlesGeometry = new THREE.BufferGeometry();
+particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+// Material
+const particlesMaterial = new THREE.PointsMaterial({
+    color: parameters.materialColor,
+    sizeAttenuation: true,
+    size: 0.03
+})
+
+// Points
+const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+scene.add(particles);
 
 /**
  * Lights
  */
-
 const directionalLight = new THREE.DirectionalLight('#ffffff', 3);
 directionalLight.position.set(1, 1, 0);
 scene.add(directionalLight);
