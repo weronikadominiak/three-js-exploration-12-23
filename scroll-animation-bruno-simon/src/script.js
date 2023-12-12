@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 import GUI from 'lil-gui'
 import gsap from 'gsap';
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+
 
 /**
  * Debug
@@ -33,7 +35,6 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 
-
 /**
  * Objects 
  */
@@ -52,13 +53,11 @@ const material = new THREE.MeshToonMaterial({
 // Meshes
 const objectsDistance = 4;
 
-const mesh1 = new THREE.Mesh(
-    new THREE.TorusGeometry(1, 0.4, 16, 60),
-    material
+let mesh1 = new THREE.Mesh(
 )
 
 const mesh2 = new THREE.Mesh(
-    new THREE.ConeGeometry(1, 2, 32),
+    new THREE.TorusGeometry(1, 0.4, 16, 60),
     material
 )
 
@@ -67,19 +66,35 @@ const mesh3 = new THREE.Mesh(
     material
 )
 
+
+// load model
+let model;
+const gltfLoader = new GLTFLoader();
+// gltfLoader.load("vochlea-logo.gltf", (gltf) => {
+// gltfLoader.load("vochlea-logo-smooth.gltf", (gltf) => {
+gltfLoader.load("vochlea-logo-smooth2.gltf", (gltf) => {
+    model = gltf.scene;
+
+    model.scale.set(0.5, 0.5, 1);
+    model.name= "logo";
+    model.position.x =  1.8;
+
+    scene.add(model);
+});
+
 // mesh1.position.y = - objectsDistance * 0;
 mesh2.position.y = - objectsDistance * 1;
 mesh3.position.y = - objectsDistance * 2;
 
 
-mesh1.position.x =  2;
+
 mesh2.position.x = - 2;
 mesh3.position.x = 2;
 
 
-scene.add(mesh1, mesh2, mesh3);
+scene.add(mesh2, mesh3);
 
-const sectionMeshes = [mesh1, mesh2, mesh3];
+const sectionMeshes = [mesh2, mesh3];
 
 
 /**
@@ -113,10 +128,12 @@ scene.add(particles);
  * Lights
  */
 const directionalLight = new THREE.DirectionalLight('#ffffff', 3);
-directionalLight.position.set(1, 1, 0);
+directionalLight.position.set(1, 1, 1);
 scene.add(directionalLight);
 
-
+const pointLight = new THREE.PointLight('#ffffff', 3);
+pointLight.position.set(1, 2, 2);
+scene.add(pointLight);
 
 
 /**
@@ -245,6 +262,11 @@ const tick = () =>
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
+
+
+    if (scene.getObjectByName("logo") && sectionMeshes.length === 2) {
+        sectionMeshes.unshift(model);
+    }
 }
 
 tick()
