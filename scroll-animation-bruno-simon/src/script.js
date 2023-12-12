@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import GUI from 'lil-gui'
+import gsap from 'gsap';
 
 /**
  * Debug
@@ -8,6 +9,7 @@ const gui = new GUI()
 
 const parameters = {
     materialColor: '#d6fc52',
+    particlesColor: '#d1bbf7',
 }
 
 gui
@@ -15,7 +17,11 @@ gui
     .onChange(() => {
         material.color.set(parameters.materialColor)
     })
- 
+gui
+    .addColor(parameters, 'particlesColor')
+    .onChange(() => {
+        particlesMaterial.color.set(parameters.particlesColor)
+    })
 
 /**
  * Base
@@ -94,7 +100,7 @@ particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 
 
 // Material
 const particlesMaterial = new THREE.PointsMaterial({
-    color: parameters.materialColor,
+    color: parameters.particlesColor,
     sizeAttenuation: true,
     size: 0.03
 })
@@ -168,10 +174,29 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  * Scroll
  */
 let scrollY = window.scrollY;
+let currentSection = 0;
 
 window.addEventListener("scroll", () => {
     scrollY = window.scrollY;
-    console.log("scroll: ", scrollY);
+    // console.log("scroll: ", scrollY);
+
+    const newSection = Math.round(scrollY / sizes.height); // it's full number when we arrive at section
+    if(newSection != currentSection) {
+        currentSection = newSection;
+        console.log('changed section', currentSection);
+
+        // tween
+        gsap.to(
+            sectionMeshes[currentSection].rotation,
+            {
+                duration: 1.5,
+                ease: 'power2.inOut',
+                x: "+=6",
+                y: "+=3",
+                z: "+=1.5"
+            }
+        )
+    }
 })
 
 
@@ -211,8 +236,8 @@ const tick = () =>
 
     // Animate meshes
     for(const mesh of sectionMeshes) {
-        mesh.rotation.x = elapsedTime * 0.1;
-        mesh.rotation.y = elapsedTime * 0.12;
+        mesh.rotation.x += deltaTime * 0.1;
+        mesh.rotation.y += deltaTime * 0.12;
     }
 
     // Render
