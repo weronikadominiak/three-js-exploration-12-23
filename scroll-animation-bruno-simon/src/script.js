@@ -2,6 +2,9 @@ import * as THREE from 'three'
 import GUI from 'lil-gui'
 import gsap from 'gsap';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+
 
 
 /**
@@ -35,13 +38,14 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 
+
 /**
  * Objects 
  */
 
 // Texture
 const textureLoader = new THREE.TextureLoader();
-const gradientTexture = textureLoader.load('textures/gradients/3.jpg');
+const gradientTexture = textureLoader.load('textures/gradients/5.jpg');
 gradientTexture.magFilter = THREE.NearestFilter;
 
 // Material
@@ -53,8 +57,7 @@ const material = new THREE.MeshToonMaterial({
 // Meshes
 const objectsDistance = 4;
 
-let mesh1 = new THREE.Mesh(
-)
+
 
 const mesh2 = new THREE.Mesh(
     new THREE.TorusGeometry(1, 0.4, 16, 60),
@@ -67,12 +70,66 @@ const mesh3 = new THREE.Mesh(
 )
 
 
+/**
+ * Fonts
+ */
+const fontLoader = new FontLoader()
+
+let textRotation = {
+    x: 0.1,
+    y: 0.1,
+}
+
+let text;
+fontLoader.load(
+    '/fonts/helvetiker_regular.typeface.json',
+    (font) =>
+    {
+        const textGeometry = new TextGeometry(
+            'vochlea',
+            {
+                font: font,
+                size: 0.60,
+                height: 0.18,
+                curveSegments: 6,
+                bevelEnabled: true,
+                bevelThickness: 0.02,
+                bevelSize: 0.05,
+                bevelOffset: 0,
+                bevelSegments: 4,
+            }
+        )
+        const textMaterial = material;
+        // const textMaterial = new THREE.MeshBasicMaterial();
+        text = new THREE.Mesh(textGeometry, textMaterial);
+        text.position.x = -3;
+        text.rotation.x = textRotation.x;
+        text.rotation.y = textRotation.y;
+        scene.add(text)
+    }
+)
+
+
+
+gui
+    .add(textRotation, 'x', -12, 12, 0.01)
+    .onChange(() => {
+        text.rotation.x = textRotation.x
+    })
+
+gui
+    .add(textRotation, 'y', -12, 12, 0.01)
+    .onChange(() => {
+        text.rotation.y = textRotation.y
+    })
+
+
 // load model
 let model;
 const gltfLoader = new GLTFLoader();
-// gltfLoader.load("vochlea-logo.gltf", (gltf) => {
-// gltfLoader.load("vochlea-logo-smooth.gltf", (gltf) => {
-gltfLoader.load("vochlea-logo-smooth2.gltf", (gltf) => {
+// gltfLoader.load("vmodels/ochlea-logo.gltf", (gltf) => {
+// gltfLoader.load("models/vochlea-logo-smooth.gltf", (gltf) => {
+gltfLoader.load("models/vochlea-logo-smooth2.gltf", (gltf) => {
     model = gltf.scene;
 
     model.scale.set(0.5, 0.5, 1);
@@ -100,13 +157,13 @@ const sectionMeshes = [mesh2, mesh3];
 /**
  * Particles
  */
-// Gemoetry
+// Geometry
 const particlesCount = 200;
 const positions = new Float32Array(particlesCount * 3)
 
 for (let i = 0; i < particlesCount; i++) {
     positions[i * 3 + 0] = (Math.random() - 0.5) * 10; // x
-    positions[i * 3 + 1] = objectsDistance * 0.5 - Math.random() * objectsDistance * sectionMeshes.length;
+    positions[i * 3 + 1] = objectsDistance * 0.5 - Math.random() * objectsDistance * (sectionMeshes.length +1);
     positions[i * 3 + 2] = (Math.random() - 0.5) * 10; // z 
 }
 
@@ -213,6 +270,19 @@ window.addEventListener("scroll", () => {
                 z: "+=1.5"
             }
         )
+
+        // if (currentSection === 0){
+        // // tween
+        //     gsap.to(
+        //         textRotation,
+        //         {
+        //             duration: 0.5,
+        //             ease: 'power2.inOut',
+        //             x: "+=3",
+        //             // y: "-=3",
+        //         }
+        //     )
+        // }
     }
 })
 
@@ -255,6 +325,11 @@ const tick = () =>
     for(const mesh of sectionMeshes) {
         mesh.rotation.x += deltaTime * 0.1;
         mesh.rotation.y += deltaTime * 0.12;
+    }
+
+    if (text) {
+        textRotation.x -= deltaTime * 0.08;
+        text.rotation.x = textRotation.x;
     }
 
     // Render
