@@ -100,7 +100,6 @@ fontLoader.load(
             }
         )
         const textMaterial = material;
-        // const textMaterial = new THREE.MeshBasicMaterial();
         text = new THREE.Mesh(textGeometry, textMaterial);
         text.position.x = -3;
         text.rotation.x = textRotation.x;
